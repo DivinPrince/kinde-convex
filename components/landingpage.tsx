@@ -3,14 +3,16 @@
  * @see https://v0.dev/t/ylWo5OSSDaU
  */
 'use client'
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink, useKindeAuth, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { Button } from "@/components/ui/button"
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
 import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs"
 import Link from "next/link"
+import { LucideListTodo, Plus } from "lucide-react";
+import { useConvexAuth } from "convex/react";
 
 export function Landingpage() {
-  const { isAuthenticated, isLoading } = useKindeBrowserClient();
+  const { isAuthenticated, isLoading } = useConvexAuth();
   return (
     <>
       <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
@@ -44,8 +46,8 @@ export function Landingpage() {
           <span className="sr-only">TaskMaster</span>
         </Link>
         <div className="ml-auto flex gap-2">
-          {!isAuthenticated && (
-            <div><Button variant="outline" asChild>
+          {!isAuthenticated && !isLoading && (
+            <div className="flex gap-2"><Button variant="outline" asChild>
             <LoginLink>
               Sign in
             </LoginLink>
@@ -57,9 +59,16 @@ export function Landingpage() {
           </Button></div>
           )}
           {isAuthenticated &&(
-            <div>signed in</div>
+            <div className="ml-auto flex gap-2">
+            <Button  asChild><Link href='/tasks'>Tasks <LucideListTodo className="ml-2 h-4 w-4" /></Link></Button>
+            <Button  asChild><LogoutLink>
+              Log Out
+              </LogoutLink></Button>
+            </div>
           )}
-          
+          {isLoading &&(
+            <div>loading...</div>
+          )}
         </div>
       </header>
       <main className="flex-1">
